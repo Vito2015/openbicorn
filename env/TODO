@@ -1,0 +1,27 @@
+
+修改注册逻辑：
+zookeeper注册中绑定服务名字，包括：
+服务地址（host port path）
+服务名称
+// 如果不修改，那么每个 start 实例必须为单一类型服务。
+// 单一注册地址，单一类服务。 crash 不影响其他实例。
+
+具体RPC服务的注册路径为: /rpc/{product}/{service}/{version}, 该路径上的节点都是永久节点
+RPC服务集群节点的注册路径为: /rpc/{product}/{service}/{version}/{ip:port}, 末尾的节点是临时节点
+
+增加服务动态挂载动态注册zk逻辑：
+动态配置 服务名称=服务类
+
+
+完善客户端服务发现，软负载均衡。
+
+
+bicorn 集群方案
+bicorn集群包括 bicorn-cli bicorn-server bicorn-balance
+
+服务插件动态挂载：
+每个部署的bicorn-server 容器实例，在启动的时候
+自动zk注册容器所在地址（ip port）
+挂载服务为空。
+
+
