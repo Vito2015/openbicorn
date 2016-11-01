@@ -13,7 +13,8 @@ err_log_file=${log_dir}/${server_name}_err.log
 out_log_file=${log_dir}/${server_name}_out.log
 
 py_env=/home/mi/.virtualenvs/venv27/bin
-srv_application=serv:app
+#srv_application=serv:app
+srv_application=
 srv_application_conf=${work_dir}/conf.py
 
 export PATH=$PATH

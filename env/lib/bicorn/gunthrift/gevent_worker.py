@@ -46,9 +46,13 @@ class GeventThriftWorker(GeventWorker, ProcessorMixin):
 
             try:
                 while True:
+                    self.handle_processor_receive(listener, client, addr)
                     processor.process(iprot, oprot)
+                    # self.notify()
             except TTransport.TTransportException:
                 pass
+            except thrift.Thrift.TException as e:
+                self.log.error(e.message)
         except socket.error as e:
             if e.args[0] == errno.ECONNRESET:
                 self.log.debug(e)
@@ -61,7 +65,9 @@ class GeventThriftWorker(GeventWorker, ProcessorMixin):
             otrans.close()
             self.cfg.post_connect_closed(self)
 
-    def handle_exit(self, sig, frame):
+    # AssertionError: Impossible to call blocking function in the event loop callback
+    # def handle_exit(self, sig, frame):
+    def handle_quit(self, sig, frame):
         ret = super(GeventThriftWorker, self).handle_exit(sig, frame)
         self.cfg.worker_term(self)
         return ret

@@ -4,8 +4,7 @@
 import sys
 sys.path.append('./gen-py')
 
-from helloworld import HelloWorld
-from helloworld2 import HelloWorld2
+from HelloWorldService import HelloWorld
 
 from thrift import Thrift
 from thrift.transport import TSocket
@@ -13,18 +12,19 @@ from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TCompactProtocol
 from thrift.protocol.TMultiplexedProtocol import TMultiplexedProtocol
 
+# from thriftpy.protocol import binary
+# from thriftpy.protocol.multiplex import TMultiplexedProtocol
+
 try:
-    transport = TSocket.TSocket('localhost', 9090)
+    host = '10.232.46.28'
+    port = 9091
+    transport = TSocket.TSocket(host, port)
     transport = TTransport.TBufferedTransport(transport)
 
-    # server default config of 'thrift_protocol_factory'
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
-
+    # protocol = binary.TBinaryProtocol(transport)
     protocol1 = TMultiplexedProtocol(protocol, 'HelloWorldService')
     client1 = HelloWorld.Client(protocol1)
-
-    protocol2 = TMultiplexedProtocol(protocol, 'HelloWorldService2')
-    client2 = HelloWorld2.Client(protocol2)
 
     transport.open()
 
@@ -34,13 +34,6 @@ try:
     print "client - say"
     msg = client1.say("Hello!")
     print "server - " + msg
-
-    print "client2 - ping"
-    print "server2 - " + client2.ping()
-
-    print "client2 - say"
-    msg = client2.say("Hello!")
-    print "server2 - " + msg
 
     transport.close()
 

@@ -4,7 +4,7 @@
 # import sys
 # import os
 
-from .utils import *
+from gunthrift.utils import *
 
 __version__ = "0.1"
 

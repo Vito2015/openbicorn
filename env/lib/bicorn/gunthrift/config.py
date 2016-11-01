@@ -131,6 +131,18 @@ class ServiceRegisterClass(Setting):
     """
 
 
+class ThriftProcessorServices(Setting):
+    name = "thrift_processor_services"
+    section = "Thrift"
+    default = {}
+    validator = validate_dict
+    desc = """\
+        Called when server starting.
+
+        for loading processor services
+        """
+
+
 class WhenReady(Setting):
     name = "when_ready"
     section = "Server Hooks"

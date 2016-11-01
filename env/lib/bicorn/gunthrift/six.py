@@ -26,3 +26,10 @@ else:
         'thriftpy_sync': 'gunthrift.thriftpy_sync_worker.SyncThriftPyWorker',
         'thriftpy_gevent': 'gunthrift.thriftpy_gevent_worker.GeventThriftPyWorker',
         }
+
+AVAILABLE_PROCESSER_TYPES = {
+    'thrift_sync': 'thrift.TMultiplexedProcessor:TMultiplexedProcessor',
+    'thrift_gevent': 'thrift.TMultiplexedProcessor:TMultiplexedProcessor',
+    'thriftpy_sync': 'thriftpy.protocol.multiplex:TMultiplexedProcessor',
+    'thriftpy_gevent': 'thriftpy.protocol.multiplex:TMultiplexedProcessor'
+}

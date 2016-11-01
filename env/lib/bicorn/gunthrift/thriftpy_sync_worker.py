@@ -65,10 +65,13 @@ class SyncThriftPyWorker(SyncWorker, ProcessorMixin):
 
             try:
                 while True:
+                    self.handle_processor_receive(listener, client, addr)
                     processor.process(iprot, oprot)
                     self.notify()
             except TTransportException:
                 pass
+            # except thrift.Thrift.TException as e:
+            #     self.log.error(e.message)
         except socket.error as e:
             if e.args[0] == errno.ECONNRESET:
                 self.log.debug(e)

@@ -2,10 +2,10 @@
 # coding: utf-8
 import os
 import sys
-sys.path.append('./gen-py')
+import thriftpy
+from thriftpy.thrift import TProcessor
 
-from HelloWorldService import HelloWorld
-from HelloWorldService.ttypes import *
+helloworld_thrift = thriftpy.load("helloworld.thrift", module_name="helloworld_thrift")
 
 
 class HelloWorldHandler:
@@ -18,4 +18,4 @@ class HelloWorldHandler:
     sys.stdout.flush()
     return ret
 
-service = HelloWorld.Processor(HelloWorldHandler())
+service = TProcessor(helloworld_thrift.HelloWorld, HelloWorldHandler())

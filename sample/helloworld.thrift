@@ -1,4 +1,5 @@
-namespace java com.miui.metok.cdc.thrift.HelloWorldService
+namespace py HelloWorldService
+# namespace java com.miui.metok.bicorn.services.HelloWorldService
 
 service HelloWorld {
     string ping(),

@@ -67,7 +67,7 @@ class ThriftZooApplication(ThriftApplication):
             service_watcher.remove_instance(instances)
 
     def run(self):
-        # don't use  super(ThriftZkApplication, self).run()
+        # don't use  super(ThriftZooApplication, self).run()
         super(ThriftApplication, self).run()
 
 

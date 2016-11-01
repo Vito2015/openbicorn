@@ -7,13 +7,14 @@ sys.path.append('../env/lib')
 
 from bicorn import multiplexed_processor
 
+from conf import worker_class
+
 import serv_helloworld
-import serv_helloworld2
-import serv_geolocate
 
 
-app = multiplexed_processor(
-    ("HelloWorldService", serv_helloworld.service),
-    ("HelloWorldService2", serv_helloworld2.service),
-    ("GeolocateService", serv_geolocate.service)
+app, _ = multiplexed_processor(
+    worker_class,
+    [
+        ("HelloWorldService", serv_helloworld.service)
+    ],
 )

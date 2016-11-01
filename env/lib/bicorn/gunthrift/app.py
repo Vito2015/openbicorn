@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from __future__ import print_function
 import os
 import sys
 
 from gunicorn.app.base import Application
+from gunicorn.errors import AppImportError
 import gunicorn.workers
 
 # `config` is unused in this module but must be imported to register config
@@ -20,16 +22,22 @@ gunicorn.workers.SUPPORTED_WORKERS.update(AVAILABLE_WORKERS)
 
 class ThriftApplication(Application):
     def __init__(self, *args, **kwargs):
+        self.services = []
+        self.services_names = []
+        self.log = None
         self.app_uri = None
         self.transport_factory = None
         self.protocol_factory = None
         self.thrift_app = None
         self.service_watcher = None
         super(ThriftApplication, self).__init__(*args, **kwargs)
+        self.services_names = self.cfg.thrift_processor_services.keys()
+        self.log = self.cfg.logger_class(self.cfg)
 
     def init(self, parser, opts, args):
         if len(args) != 1:
-            parser.error("No application name specified.")
+            args.append("bicorn")
+            self.cfg.logger_class(self.cfg).error("No application name specified.")
         self.cfg.set("default_proc_name", args[0])
 
         self.app_uri = args[0]
@@ -39,7 +47,19 @@ class ThriftApplication(Application):
             raise ValueError
 
     def load_thrift_app(self):
-        return utils.load_obj(self.app_uri)
+        if ':' in self.app_uri:
+            app = utils.load_obj(self.app_uri)
+        else:
+            services = self.cfg.thrift_processor_services
+            if isinstance(services, dict):
+                app, self.services = utils.multiplexed_processor(self.cfg.worker_class_str, services)
+            # elif isinstance(services, list):
+            #     self.services_names = [x[0] for x in services if isinstance(x, (tuple, list))]
+            #     app = utils.multiplexed_processor(*services)
+            else:
+                raise AppImportError("Invalid \"thrift_processor_services\" configuration. "
+                                     "{processorName:processor} please")
+        return app
 
     def load(self):
         self.chdir()
