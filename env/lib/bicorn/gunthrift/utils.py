@@ -86,6 +86,21 @@ def load_obj(import_path):
     return app
 
 
+def _get_sock_type_name(sock_type):
+    if sock_type == 1:
+        return 'TCP'
+    elif sock_type == 2:
+        return 'UDP'
+    elif sock_type == 3:
+        return 'RAW'
+    elif sock_type == 4:
+        return 'RDM-UDP'
+    elif sock_type == 5:
+        return 'SEQPACKET'
+    else:
+        return 'UNKNOWN'
+
+
 class ProcessorMixin(object):
     def get_thrift_processor(self):
         return self.app.thrift_app.get_processor() if \
@@ -95,5 +110,7 @@ class ProcessorMixin(object):
     def handle_processor_receive(self, listener, client, addr):
         sock_name = client.getsockname()
         # self.log.info('client %s', dir(client))
-        self.log.info('Received messages: %s -> %s', "%s:%s" % (addr[0], addr[1]),
-                      "%s:%s" % (sock_name[0], sock_name[1]))
+        self.log.info('NETWORK %s %s -> %s',
+                      _get_sock_type_name(client.type),
+                      "%s:%s" % (sock_name[0], sock_name[1]),
+                      "%s:%s" % (addr[0], addr[1]))
